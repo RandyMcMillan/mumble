@@ -232,15 +232,9 @@ endif()
 
 if(client)
 	add_subdirectory(mumble)
-
-	if(UNIX AND NOT APPLE)
-		install(FILES "${CMAKE_SOURCE_DIR}/icons/mumble.svg" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps")
-		install(FILES "${CMAKE_SOURCE_DIR}/icons/mumble_256x256.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/256x256/apps" RENAME "mumble.png")
-	endif()
 endif()
 
 if(server)
-	add_subdirectory(database)
 	add_subdirectory(murmur)
 endif()
 

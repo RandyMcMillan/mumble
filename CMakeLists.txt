@@ -27,6 +27,8 @@ project(mumble
 	LANGUAGES "C" "CXX"
 )
 
+cmake_policy(SET CMP0068 OLD)
+
 set(3RDPARTY_DIR "${CMAKE_SOURCE_DIR}/3rdparty")
 set(PLUGINS_DIR "${CMAKE_SOURCE_DIR}/plugins")
 
@@ -56,6 +58,9 @@ add_library(PostgreSQL::PostgreSQL UNKNOWN IMPORTED)
 set_target_properties(PostgreSQL::PostgreSQL PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES "/opt/homebrew/opt/libpq/include"
     IMPORTED_LOCATION_RELEASE "/opt/homebrew/opt/libpq/lib/libpq.dylib"
+    IMPORTED_LOCATION_DEBUG "/opt/homebrew/opt/libpq/lib/libpq.dylib"
+    IMPORTED_LOCATION_MINSIZEREL "/opt/homebrew/opt/libpq/lib/libpq.dylib"
+    IMPORTED_LOCATION_RELWITHDEBINFO "/opt/homebrew/opt/libpq/lib/libpq.dylib"
 )
 
 # Manually define MySQL::MySQL target
@@ -63,28 +68,11 @@ add_library(MySQL::MySQL UNKNOWN IMPORTED)
 set_target_properties(MySQL::MySQL PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES "/opt/homebrew/opt/mysql-client/include"
     IMPORTED_LOCATION_RELEASE "/opt/homebrew/opt/mysql-client/lib/libmysqlclient.dylib"
+    IMPORTED_LOCATION_DEBUG "/opt/homebrew/opt/mysql-client/lib/libmysqlclient.dylib"
+    IMPORTED_LOCATION_MINSIZEREL "/opt/homebrew/opt/mysql-client/lib/libmysqlclient.dylib"
+    IMPORTED_LOCATION_RELWITHDEBINFO "/opt/homebrew/opt/mysql-client/lib/libmysqlclient.dylib"
 )
 
-# Manually define Ice::Ice target
-add_library(Ice::Ice UNKNOWN IMPORTED)
-set_target_properties(Ice::Ice PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES "/opt/homebrew/opt/ice/include;/opt/homebrew/opt/ice/sdk/macosx.sdk/usr/include"
-    IMPORTED_LOCATION_RELEASE "/opt/homebrew/opt/ice/lib/libIce.dylib"
-)
-
-# Manually define Ice::IceSSL target
-add_library(Ice::IceSSL UNKNOWN IMPORTED)
-set_target_properties(Ice::IceSSL PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES "/opt/homebrew/opt/ice/include;/opt/homebrew/opt/ice/sdk/macosx.sdk/usr/include"
-    IMPORTED_LOCATION_RELEASE "/opt/homebrew/opt/ice/lib/libIceSSL.dylib"
-)
-
-# Manually define Ice::IceUtil target
-add_library(Ice::IceUtil UNKNOWN IMPORTED)
-set_target_properties(Ice::IceUtil PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES "/opt/homebrew/opt/ice/include;/opt/homebrew/opt/ice/sdk/macosx.sdk/usr/include"
-    IMPORTED_LOCATION_RELEASE "/opt/homebrew/opt/ice/lib/libIceUtil.dylib"
-)
 
 check_ipo_supported(RESULT LTO_DEFAULT)
 
@@ -107,8 +95,8 @@ endif()
 
 option(debug-dependency-search "Prints extended information during the search for the needed dependencies" OFF)
 
-if(NOT CMAKE_BUILD_TYPE)
-	set_property(CACHE CMAKE_BUILD_TYPE PROPERTY VALUE "Release")
+if(NOT CMAKE_BUILD_TYPE AND NOT IS_MULTI_CONFIG)
+	set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(
         "-DDEBUG"

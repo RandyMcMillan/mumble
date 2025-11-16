@@ -27,6 +27,14 @@ ICE_SLICE_DIR="${ICE_PREFIX}/share/Ice/slice"
 echo "Ice_DIR set to: ${ICE_CMAKE_DIR}"
 echo "Ice_SLICE_DIR set to: ${ICE_SLICE_DIR}"
 
+# Set ICE_HOME environment variable
+export ICE_HOME="${ICE_PREFIX}"
+echo "ICE_HOME set to: ${ICE_HOME}"
+
+# Set CMAKE_PREFIX_PATH for Homebrew
+export CMAKE_PREFIX_PATH="/opt/homebrew"
+echo "CMAKE_PREFIX_PATH set to: ${CMAKE_PREFIX_PATH}"
+
 
 # Get the installation prefix for MySQL client
 MYSQL_PREFIX=$(brew --prefix mysql-client)
@@ -51,10 +59,16 @@ echo "--- 4. Running Combined CMake Configuration ---"
 
 # The source directory argument is now '..' (the parent directory)
 cmake \
+    -DCMAKE_BUILD_TYPE=Release \
     # ICE Path Hints
     -DIce_DIR="${ICE_CMAKE_DIR}" \
     -DIce_SLICE_DIR="${ICE_SLICE_DIR}" \
     -DIce_ADD_SLICE_COMPILER=ON \
+    -DICE_INCLUDE_DIR="${ICE_PREFIX}/include" \
+    -DICE_LIBRARY="${ICE_PREFIX}/lib" \
+    -DICE_UTIL_LIBRARY="${ICE_PREFIX}/lib/libIceUtil.dylib" \
+    -DICE_SSL_LIBRARY="${ICE_PREFIX}/lib/libIceSSL.dylib" \
+    -DICE_ICE_LIBRARY="${ICE_PREFIX}/lib/libIce.dylib" \
     \
     # MySQL Path Hints (to resolve missing MySQL errors)
     -DMYSQL_INCLUDE_DIR="${MYSQL_PREFIX}/include" \
