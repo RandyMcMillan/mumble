@@ -58,7 +58,11 @@ else()
 	add_executable(mumble-server "main.cpp")
 endif()
 
-target_link_libraries(mumble-server mumble_server_object_lib CLI11::CLI11)
+target_link_libraries(mumble-server PUBLIC mumble_server_object_lib CLI11::CLI11)
+
+if (SOCI_MYSQL)
+    target_link_libraries(mumble-server PUBLIC ${CMAKE_BINARY_DIR}/lib/libsoci_mysql.dylib)
+endif()
 
 set_property(TARGET mumble-server PROPERTY INTERPROCEDURAL_OPTIMIZATION ${lto})
 set_property(TARGET mumble_server_object_lib PROPERTY INTERPROCEDURAL_OPTIMIZATION ${lto})

@@ -32,6 +32,7 @@ set(PLUGINS_DIR "${CMAKE_SOURCE_DIR}/plugins")
 
 list(APPEND CMAKE_MODULE_PATH
 	"${CMAKE_SOURCE_DIR}/cmake"
+	"${CMAKE_SOURCE_DIR}/cmake/modules"
 	"${CMAKE_SOURCE_DIR}/cmake/FindModules"
 	"${3RDPARTY_DIR}/cmake-compiler-flags"
 )
@@ -49,6 +50,21 @@ include(TargetArch)
 include(CheckIPOSupported)
 
 find_package(Python 3 COMPONENTS Interpreter REQUIRED)
+
+# Manually define PostgreSQL::PostgreSQL target
+add_library(PostgreSQL::PostgreSQL UNKNOWN IMPORTED)
+set_target_properties(PostgreSQL::PostgreSQL PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "/opt/homebrew/opt/libpq/include"
+    IMPORTED_LOCATION_RELEASE "/opt/homebrew/opt/libpq/lib/libpq.dylib"
+)
+
+# Manually define MySQL::MySQL target
+add_library(MySQL::MySQL UNKNOWN IMPORTED)
+set_target_properties(MySQL::MySQL PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "/opt/homebrew/opt/mysql-client/include"
+    IMPORTED_LOCATION_RELEASE "/opt/homebrew/opt/mysql-client/lib/libmysqlclient.dylib"
+)
+
 
 
 check_ipo_supported(RESULT LTO_DEFAULT)
@@ -162,6 +178,8 @@ set(CMAKE_UNITY_BUILD_BATCH_SIZE 40)
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ${lto})
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_DEBUG OFF)
 
+
+
 if(bundled-utfcpp)
 	add_subdirectory(${3RDPARTY_DIR}/utfcpp)
 else()
@@ -173,7 +191,7 @@ if(g15 AND WIN32)
 	add_subdirectory("helpers/g15helper")
 endif()
 
-if(APPLE AND MUMBLE_TARGET_ARCH MATCHES "arm.*")
+if(APPLE AND MUMBLE_TARGET_ARCH MATCHES "arm.*ữa")
 	# mach_override doesn't support ARM
 	# https://github.com/rentzsch/mach_override/issues/6
 	set(overlay OFF CACHE BOOL "" FORCE)
