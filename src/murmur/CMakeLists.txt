@@ -200,20 +200,6 @@ if(zeroconf)
 endif()
 
 if(ice)
-	find_pkg(Ice
-		COMPONENTS
-			Ice
-			IceSSL
-		OPTIONAL_COMPONENTS
-			IceDiscovery
-			IceLocatorDiscovery
-			IceUtil
-		REQUIRED
-	)
-
-	if(Ice_VERSION_MAJOR LESS 3)
-		message(FATAL_ERROR "Unsupported Ice version, at least 3.0 is required.")
-	endif()
 
 	get_filename_component(ICE_FILE_NAME ${ICE_FILE} NAME_WE)
 
@@ -222,13 +208,11 @@ if(ice)
 		"${ICE_FILE_NAME}.h"
 	)
 
-	foreach(SLICE_DIR ${Ice_SLICE_DIRS})
-		list(APPEND SLICE_INCLUDE_ARGS "-I${SLICE_DIR}")
-	endforeach()
+	list(APPEND SLICE_INCLUDE_ARGS "-I/opt/homebrew/opt/ice/share/ice/slice")
 
 	add_custom_command(
 		OUTPUT ${ICE_GENERATED_FILES}
-		COMMAND ${Ice_SLICE2CPP_EXECUTABLE}
+		COMMAND /opt/homebrew/opt/ice/bin/slice2cpp
 		ARGS "--checksum" ${SLICE_INCLUDE_ARGS} ${ICE_FILE}
 		MAIN_DEPENDENCY ${ICE_FILE}
 		COMMENT "Generating Ice files"
@@ -278,9 +262,7 @@ if(ice)
 		PUBLIC
 			Ice::Ice
 			Ice::IceSSL
-			$<TARGET_NAME_IF_EXISTS:Ice::IceDiscovery>
-			$<TARGET_NAME_IF_EXISTS:Ice::IceLocatorDiscovery>
-			$<TARGET_NAME_IF_EXISTS:Ice::IceUtil>
+			Ice::IceUtil
 			$<TARGET_NAME_IF_EXISTS:BZip2::BZip2>
 	)
 	

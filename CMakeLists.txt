@@ -65,7 +65,26 @@ set_target_properties(MySQL::MySQL PROPERTIES
     IMPORTED_LOCATION_RELEASE "/opt/homebrew/opt/mysql-client/lib/libmysqlclient.dylib"
 )
 
+# Manually define Ice::Ice target
+add_library(Ice::Ice UNKNOWN IMPORTED)
+set_target_properties(Ice::Ice PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "/opt/homebrew/opt/ice/include;/opt/homebrew/opt/ice/sdk/macosx.sdk/usr/include"
+    IMPORTED_LOCATION_RELEASE "/opt/homebrew/opt/ice/lib/libIce.dylib"
+)
 
+# Manually define Ice::IceSSL target
+add_library(Ice::IceSSL UNKNOWN IMPORTED)
+set_target_properties(Ice::IceSSL PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "/opt/homebrew/opt/ice/include;/opt/homebrew/opt/ice/sdk/macosx.sdk/usr/include"
+    IMPORTED_LOCATION_RELEASE "/opt/homebrew/opt/ice/lib/libIceSSL.dylib"
+)
+
+# Manually define Ice::IceUtil target
+add_library(Ice::IceUtil UNKNOWN IMPORTED)
+set_target_properties(Ice::IceUtil PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "/opt/homebrew/opt/ice/include;/opt/homebrew/opt/ice/sdk/macosx.sdk/usr/include"
+    IMPORTED_LOCATION_RELEASE "/opt/homebrew/opt/ice/lib/libIceUtil.dylib"
+)
 
 check_ipo_supported(RESULT LTO_DEFAULT)
 
