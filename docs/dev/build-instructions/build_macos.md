@@ -67,6 +67,51 @@ Once cmake has been run, you can issue `make` from the build directory in order 
 parallelize the build, use `make -j <jobs>` where `<jobs>` is the amount of parallel jobs to be run concurrently (e.g., `make -j8`).
 
 
+## Verifying the Build
+
+After a successful build, you can test the server and client applications.
+
+### Testing the Server
+
+The compiled `mumble-server` executable requires a configuration file and a data directory.
+
+1.  **Create a data directory:**
+    ```bash
+    mkdir -p ~/.mumble-server
+    ```
+
+2.  **Copy and modify the configuration:**
+    ```bash
+    cp ../auxiliary_files/mumble-server.ini ~/.mumble-server/
+    sed -i '' 's,^database=.*,database=/Users/git/.mumble-server/mumble-server.sqlite,' ~/.mumble-server/mumble-server.ini
+    sed -i '' 's,^logfile=.*,logfile=/Users/git/.mumble-server/mumble-server.log,' ~/.mumble-server/mumble-server.ini
+    ```
+    *(Note: Replace `/Users/git/` with your actual home directory path if it differs)*
+
+3.  **Set the SuperUser password:**
+    ```bash
+    ./build/mumble-server -i ~/.mumble-server/mumble-server.ini --set-su-pw YOUR_PASSWORD
+    ```
+    *(Replace `YOUR_PASSWORD` with a strong password)*
+
+4.  **Run the server:**
+    ```bash
+    ./build/mumble-server -i ~/.mumble-server/mumble-server.ini --foreground
+    ```
+
+    If the server starts successfully, it will print log messages to the console. You can stop the server by pressing `Ctrl+C`.
+
+### Testing the Client
+
+Launch the Mumble client application from the build directory:
+
+```bash
+./build/Mumble.app/Contents/MacOS/Mumble
+```
+
+The Mumble client should launch without any immediate errors. You can then attempt to connect to your local server, which will be running on `localhost` at the default port.
+
+
 ## Running the Server
 
 The compiled `mumble-server` executable requires a configuration file and a data directory.

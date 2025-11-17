@@ -58,10 +58,7 @@ else()
 	add_executable(mumble-server "main.cpp")
 endif()
 
-# find_package(Ice REQUIRED)
-
-list(APPEND CMAKE_PREFIX_PATH "/opt/homebrew/opt/ice")
-target_link_libraries(mumble-server PUBLIC mumble_server_object_lib CLI11::CLI11 /opt/homebrew/opt/ice/lib/libIce.dylib /opt/homebrew/opt/ice/lib/libIceSSL.dylib)
+target_link_libraries(mumble-server PUBLIC mumble_server_object_lib CLI11::CLI11)
 
 target_include_directories(mumble_server_object_lib
 	PUBLIC
@@ -69,13 +66,7 @@ target_include_directories(mumble_server_object_lib
 		${SHARED_SOURCE_DIR}
 )
 
-
-
-if (SOCI_MYSQL)
-    target_link_libraries(mumble-server PUBLIC ${CMAKE_BINARY_DIR}/lib/libsoci_mysql.dylib)
-endif()
-
-set_property(TARGET mumble-server PROPERTY INTERPROCEDURAL_OPTIMIZATION ${lto})
+set_property(TARGET mumble-server PROPERTY INTERPROCURAL_OPTIMIZATION ${lto})
 set_property(TARGET mumble_server_object_lib PROPERTY INTERPROCEDURAL_OPTIMIZATION ${lto})
 
 set_target_properties(mumble_server_object_lib
@@ -108,12 +99,6 @@ target_link_libraries(mumble_server_object_lib
 	PUBLIC
 		shared
 		spdlog::spdlog
-		/opt/homebrew/lib/libsoci_core.dylib
-		/opt/homebrew/lib/libsoci_mysql.dylib
-		/opt/homebrew/lib/libsoci_postgresql.dylib
-		/opt/homebrew/lib/libsoci_sqlite3.dylib
-		/opt/homebrew/opt/ice/lib/libIce.dylib
-		/opt/homebrew/opt/ice/lib/libIceSSL.dylib
 )
 
 if(static)
