@@ -8,6 +8,10 @@ building a static version, checkout [this file](build_static.md).
 - **2025-11-17:** The default Xcode build on Apple Silicon (arm64) can produce a non-functional `mumble-server` executable. The build process has been updated to use "Unix Makefiles" to resolve this.
 - **2025-11-17:** Added instructions for enabling Objective-C and Objective-C++ in `CMakeLists.txt` which is required for Makefile-based builds on macOS.
 - **2025-11-17:** Added a section on configuring and running the server for the first time, including creating a data directory and setting the superuser password.
+- **2025-11-17:** Submodules updated to newer commits:
+    - `3rdparty/mach-override-src`
+    - `3rdparty/rnnoise-src`
+    - `3rdparty/soci`
 - **2025-05-26:** Updated required Qt version from 5 to 6.
 
 ## Dependencies
