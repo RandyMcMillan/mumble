@@ -32,6 +32,10 @@ export ICE_HOME="${ICE_PREFIX}"
 echo "ICE_HOME set to: ${ICE_HOME}"
 
 # Set CMAKE_PREFIX_PATH for Homebrew
+export ICE_HOME="${ICE_PREFIX}"
+echo "ICE_HOME set to: ${ICE_HOME}"
+
+# Set CMAKE_PREFIX_PATH for Homebrew
 export CMAKE_PREFIX_PATH="/opt/homebrew"
 echo "CMAKE_PREFIX_PATH set to: ${CMAKE_PREFIX_PATH}"
 

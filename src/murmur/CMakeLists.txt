@@ -59,9 +59,7 @@ else()
 endif()
 
 list(APPEND CMAKE_PREFIX_PATH "/opt/homebrew/opt/ice")
-find_package(Ice REQUIRED)
-
-target_link_libraries(mumble-server PUBLIC mumble_server_object_lib CLI11::CLI11 Ice::Ice Ice::IceSSL Ice::IceUtil)
+target_link_libraries(mumble-server PUBLIC mumble_server_object_lib CLI11::CLI11 /opt/homebrew/opt/ice/lib/libIce.dylib /opt/homebrew/opt/ice/lib/libIceSSL.dylib /opt/homebrew/opt/ice/lib/libIceUtil.dylib)
 
 target_include_directories(mumble_server_object_lib
 	PUBLIC
