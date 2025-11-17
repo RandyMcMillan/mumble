@@ -39,6 +39,7 @@ list(APPEND CMAKE_MODULE_PATH
 	"${CMAKE_SOURCE_DIR}/cmake/modules"
 	"${CMAKE_SOURCE_DIR}/cmake/FindModules"
 	"${3RDPARTY_DIR}/cmake-compiler-flags"
+	"${3RDPARTY_DIR}/soci/cmake/find_modules"
 )
 
 if(NOT DEFINED CMAKE_CXX_STANDARD OR CMAKE_CXX_STANDARD LESS 20)
@@ -60,25 +61,8 @@ include(CheckIPOSupported)
 
 find_package(Python 3 COMPONENTS Interpreter REQUIRED)
 
-# Manually define PostgreSQL::PostgreSQL target
-add_library(PostgreSQL::PostgreSQL UNKNOWN IMPORTED)
-set_target_properties(PostgreSQL::PostgreSQL PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES "/opt/homebrew/opt/libpq/include"
-    IMPORTED_LOCATION_RELEASE "/opt/homebrew/opt/libpq/lib/libpq.dylib"
-    IMPORTED_LOCATION_DEBUG "/opt/homebrew/opt/libpq/lib/libpq.dylib"
-    IMPORTED_LOCATION_MINSIZEREL "/opt/homebrew/opt/libpq/lib/libpq.dylib"
-    IMPORTED_LOCATION_RELWITHDEBINFO "/opt/homebrew/opt/libpq/lib/libpq.dylib"
-)
-
-# Manually define MySQL::MySQL target
-add_library(MySQL::MySQL UNKNOWN IMPORTED)
-set_target_properties(MySQL::MySQL PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES "/opt/homebrew/opt/mysql-client/include"
-    IMPORTED_LOCATION_RELEASE "/opt/homebrew/opt/mysql-client/lib/libmysqlclient.dylib"
-    IMPORTED_LOCATION_DEBUG "/opt/homebrew/opt/mysql-client/lib/libmysqlclient.dylib"
-    IMPORTED_LOCATION_MINSIZEREL "/opt/homebrew/opt/mysql-client/lib/libmysqlclient.dylib"
-    IMPORTED_LOCATION_RELWITHDEBINFO "/opt/homebrew/opt/mysql-client/lib/libmysqlclient.dylib"
-)
+find_package(PostgreSQL REQUIRED)
+find_package(MySQL REQUIRED)
 
 
 check_ipo_supported(RESULT LTO_DEFAULT)
