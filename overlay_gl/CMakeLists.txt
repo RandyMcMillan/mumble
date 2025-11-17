@@ -9,6 +9,10 @@ include(CheckIncludeFile)
 
 add_library(overlay_gl SHARED "overlay.c")
 
+if(APPLE)
+    set_source_files_properties("overlay.c" PROPERTIES LANGUAGE OBJC)
+endif()
+
 set_target_properties(overlay_gl
 	PROPERTIES
 		LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}

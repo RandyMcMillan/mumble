@@ -10,11 +10,11 @@ set(MURMUR_PLIST "${CMAKE_CURRENT_BINARY_DIR}/murmur.plist")
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/murmur.plist.in" "${MURMUR_PLIST}")
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/murmur.rc.in" "${MURMUR_RC}")
 
-set(ICE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/MumbleServer.ice")
+
 
 include(qt-utils)
 
-option(ice "Build support for Ice RPC." ON)
+
 
 find_pkg(Qt6 COMPONENTS Sql REQUIRED)
 
@@ -58,9 +58,15 @@ else()
 	add_executable(mumble-server "main.cpp")
 endif()
 
-target_link_libraries(mumble-server mumble_server_object_lib CLI11::CLI11)
+target_link_libraries(mumble-server PUBLIC mumble_server_object_lib CLI11::CLI11)
 
-set_property(TARGET mumble-server PROPERTY INTERPROCEDURAL_OPTIMIZATION ${lto})
+target_include_directories(mumble_server_object_lib
+	PUBLIC
+		${CMAKE_CURRENT_SOURCE_DIR}
+		${SHARED_SOURCE_DIR}
+)
+
+set_property(TARGET mumble-server PROPERTY INTERPROCURAL_OPTIMIZATION ${lto})
 set_property(TARGET mumble_server_object_lib PROPERTY INTERPROCEDURAL_OPTIMIZATION ${lto})
 
 set_target_properties(mumble_server_object_lib
@@ -86,11 +92,14 @@ target_compile_definitions(mumble_server_object_lib
 
 target_include_directories(mumble_server_object_lib
 	PUBLIC
-		${CMAKE_CURRENT_SOURCE_DIR} # This is required for includes in current folder to be found by files from the shared directory.
+		${CMAKE_CURRENT_SOURCE_DIR}
 		${SHARED_SOURCE_DIR}
 )
-
-target_link_libraries(mumble_server_object_lib PUBLIC shared Qt6::Sql)
+target_link_libraries(mumble_server_object_lib
+	PUBLIC
+		shared
+		spdlog::spdlog
+)
 
 if(static)
 	# MariaDB and MySQL
@@ -195,93 +204,7 @@ if(zeroconf)
 	)
 endif()
 
-if(ice)
-	find_pkg(Ice
-		COMPONENTS
-			Ice
-			IceSSL
-		OPTIONAL_COMPONENTS
-			IceDiscovery
-			IceLocatorDiscovery
-			IceUtil
-		REQUIRED
-	)
 
-	if(Ice_VERSION_MAJOR LESS 3)
-		message(FATAL_ERROR "Unsupported Ice version, at least 3.0 is required.")
-	endif()
-
-	get_filename_component(ICE_FILE_NAME ${ICE_FILE} NAME_WE)
-
-	list(APPEND ICE_GENERATED_FILES
-		"${ICE_FILE_NAME}.cpp"
-		"${ICE_FILE_NAME}.h"
-	)
-
-	foreach(SLICE_DIR ${Ice_SLICE_DIRS})
-		list(APPEND SLICE_INCLUDE_ARGS "-I${SLICE_DIR}")
-	endforeach()
-
-	add_custom_command(
-		OUTPUT ${ICE_GENERATED_FILES}
-		COMMAND ${Ice_SLICE2CPP_EXECUTABLE}
-		ARGS "--checksum" ${SLICE_INCLUDE_ARGS} ${ICE_FILE}
-		MAIN_DEPENDENCY ${ICE_FILE}
-		COMMENT "Generating Ice files"
-		VERBATIM
-	)
-
-	add_custom_target(generate_murmur_ice_wrapper
-		DEPENDS "MumbleServerIceWrapper.cpp" 
-	)
-	add_dependencies(mumble_server_object_lib generate_murmur_ice_wrapper)
-	add_custom_command(
-		OUTPUT "MumbleServerIceWrapper.cpp"
-		COMMAND Python::Interpreter
-		ARGS "${CMAKE_SOURCE_DIR}/scripts/generateIceWrapper.py" -i "${ICE_FILE}"
-			-g "${ICE_FILE_NAME}.h" -o "MumbleServerIceWrapper.cpp" -q
-		DEPENDS ${ICE_GENERATED_FILES}
-		COMMENT "Generating MumbleServerIceWrapper"
-	)
-	# Even though the file is a .cpp, it is still being included in MumbleServerIce.cpp
-	target_include_directories(mumble_server_object_lib PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
-
-	# We explicitly tell CMake not to call any autogen tools (e.g. MOC) for the generated files.
-	# @ref https://cmake.org/cmake/help/latest/policy/CMP0071.html
-	set_property(SOURCE ${ICE_GENERATED_FILES} PROPERTY SKIP_AUTOGEN ON)
-
-	target_sources(mumble_server_object_lib
-		PRIVATE
-			"MumbleServerIce.cpp"
-			"MumbleServerIce.h"
-			${ICE_GENERATED_FILES}
-	)
-	target_compile_definitions(mumble_server_object_lib
-		PUBLIC
-			"USE_ICE"
-			"ICE_STATIC_LIBS"
-	)
-
-	target_include_directories(mumble_server_object_lib PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
-
-	if(static)
-		# BZip2 is used by Ice, specifically in ConnectionI.cpp.
-		# We link to the library explicitly because CMake is not aware of the dependency.
-		# TODO: Fix or rewrite the official FindIce.cmake.
-		find_pkg(BZip2 REQUIRED)
-	endif()
-	target_link_libraries(mumble_server_object_lib
-		PUBLIC
-			Ice::Ice
-			Ice::IceSSL
-			$<TARGET_NAME_IF_EXISTS:Ice::IceDiscovery>
-			$<TARGET_NAME_IF_EXISTS:Ice::IceLocatorDiscovery>
-			$<TARGET_NAME_IF_EXISTS:Ice::IceUtil>
-			$<TARGET_NAME_IF_EXISTS:BZip2::BZip2>
-	)
-	
-	file(COPY "${ICE_FILE}" DESTINATION ${CMAKE_BINARY_DIR})
-endif()
 
 install(TARGETS mumble-server RUNTIME DESTINATION "${MUMBLE_INSTALL_EXECUTABLEDIR}" COMPONENT mumble_server)
 

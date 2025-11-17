@@ -3,13 +3,13 @@
 	url = https://github.com/mumble-voip/minhook.git
 [submodule "3rdparty/mach-override-src"]
 	path = 3rdparty/mach-override-src
-	url = https://github.com/mumble-voip/mach_override.git
+	url = https://github.com/RandyMcMillan/mach_override.git
 [submodule "3rdparty/speexdsp"]
 	path = 3rdparty/speexdsp
 	url = https://github.com/xiph/speexdsp.git
 [submodule "3rdparty/rnnoise-src"]
 	path = 3rdparty/rnnoise-src
-	url = https://github.com/xiph/rnnoise.git
+	url = https://github.com/RandyMcMillan/rnnoise.git
 [submodule "3rdparty/tracy"]
 	path = 3rdparty/tracy
 	url = https://github.com/wolfpld/tracy.git
@@ -30,7 +30,7 @@
 	url = https://github.com/mumble-voip/utfcpp.git
 [submodule "3rdparty/soci"]
 	path = 3rdparty/soci
-	url = https://github.com/SOCI/soci.git
+	url = https://github.com/RandyMcMillan/soci.git
 [submodule "3rdparty/spdlog"]
 	path = 3rdparty/spdlog
 	url = https://github.com/gabime/spdlog.git

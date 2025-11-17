@@ -17,7 +17,7 @@ include(install-library)
 
 option(update "Check for updates by default." ON)
 
-option(translations "Include languages other than English." ON)
+option(translations "Include languages other than English." OFF)
 option(bundle-qt-translations "Bundle Qt's translations as well" ${static}) 
 
 option(bundled-speex "Build the included version of Speex instead of looking for one on the system." ON)
@@ -848,19 +848,19 @@ if(NOT WIN32 AND NOT APPLE)
 	target_link_libraries(mumble_client_object_lib PUBLIC Qt6::DBus)
 endif()
 
-if(translations)
-	# Glob for all translation files in the source dir
-	file(GLOB TS_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.ts")
-
-	include_translations(QRC_FILE ${CMAKE_CURRENT_BINARY_DIR} "${TS_FILES}")
-	target_sources(mumble_client_object_lib PRIVATE "${QRC_FILE}")
-
-	if(bundle-qt-translations)
-		bundle_qt_translations(mumble_client_object_lib)
-	endif()
-elseif(bundle-qt-translations)
-	message(WARNING "Can't bundle Qt translations if translations are disabled!")
-endif()
+# if(translations)
+# 	# Glob for all translation files in the source dir
+# 	file(GLOB TS_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.ts")
+# 
+# 	include_translations(QRC_FILE ${CMAKE_CURRENT_BINARY_DIR} "${TS_FILES}")
+# 	target_sources(mumble_client_object_lib PRIVATE "${QRC_FILE}")
+# 
+# 	if(bundle-qt-translations)
+# 		bundle_qt_translations(mumble_client_object_lib)
+# 	endif()
+# elseif(bundle-qt-translations)
+# 	message(WARNING "Can't bundle Qt translations if translations are disabled!")
+# endif()
 
 if(overlay)
 	target_sources(mumble_client_object_lib
