@@ -111,7 +111,7 @@ target_link_libraries(mumble_server_object_lib
 		/opt/homebrew/lib/libsoci_core.dylib
 		/opt/homebrew/lib/libsoci_mysql.dylib
 		/opt/homebrew/lib/libsoci_postgresql.dylib
-		soci_sqlite3
+		/opt/homebrew/lib/libsoci_sqlite3.dylib
 		/opt/homebrew/opt/ice/lib/libIce.dylib
 		/opt/homebrew/opt/ice/lib/libIceSSL.dylib
 )

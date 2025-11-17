@@ -235,5 +235,6 @@ if(client)
 endif()
 
 if(server)
+	add_subdirectory(database)
 	add_subdirectory(murmur)
 endif()
