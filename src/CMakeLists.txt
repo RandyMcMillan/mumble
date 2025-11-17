@@ -233,3 +233,7 @@ endif()
 if(client)
 	add_subdirectory(mumble)
 endif()
+
+if(server)
+	add_subdirectory(murmur)
+endif()
