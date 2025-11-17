@@ -58,8 +58,9 @@ else()
 	add_executable(mumble-server "main.cpp")
 endif()
 
-list(APPEND CMAKE_PREFIX_PATH "/opt/homebrew/opt/ice")
-target_link_libraries(mumble-server PUBLIC mumble_server_object_lib CLI11::CLI11 /opt/homebrew/opt/ice/lib/libIce.dylib /opt/homebrew/opt/ice/lib/libIceSSL.dylib /opt/homebrew/opt/ice/lib/libIceUtil.dylib)
+find_package(Ice REQUIRED)
+
+target_link_libraries(mumble-server PUBLIC mumble_server_object_lib CLI11::CLI11 Ice::Ice)
 
 target_include_directories(mumble_server_object_lib
 	PUBLIC
@@ -110,9 +111,7 @@ target_link_libraries(mumble_server_object_lib
 		soci_mysql
 		soci_postgresql
 		soci_sqlite3
-		/opt/homebrew/opt/ice/lib/libIce.dylib
-		/opt/homebrew/opt/ice/lib/libIceSSL.dylib
-		/opt/homebrew/opt/ice/lib/libIceUtil.dylib
+		Ice::Ice
 )
 
 if(static)
