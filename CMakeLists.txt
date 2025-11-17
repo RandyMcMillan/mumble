@@ -84,7 +84,7 @@ option(symbols "Build binaries in a way that allows easier debugging." OFF)
 option(warnings-as-errors "All warnings are treated as errors." ON)
 
 option(client "Build the client (Mumble)" ON)
-option(server "Build the server (Murmur)" ON)
+option(server "Build the server (Murmur)" OFF)
 option(packaging "Build package." OFF)
 option(tests "Build tests." ${packaging})
 option(plugins "Build plugins." ON)
