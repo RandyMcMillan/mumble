@@ -3,7 +3,7 @@
 # that can be found in the LICENSE file at the root of the
 # Mumble source tree or at <https://www.mumble.info/LICENSE>.
 
-option(bundled-soci "Build the included version of SOCI instead of looking for one on the system" ON)
+option(bundled-soci "Build the included version of SOCI instead of looking for one on the system" OFF)
 
 option(enable-sqlite "Whether or not to enable the SQLite database backend" ON)
 option(enable-mysql "Whether or not to enable the MySQL database backend" ${server})
