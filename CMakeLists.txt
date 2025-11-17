@@ -48,6 +48,11 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15)
 
 include(pkg-utils)
 include(project-utils)
+
+if(APPLE AND NOT CMAKE_OSX_ARCHITECTURES)
+  set(CMAKE_OSX_ARCHITECTURES "arm64")
+endif()
+
 include(TargetArch)
 include(CheckIPOSupported)
 

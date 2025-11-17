@@ -233,15 +233,3 @@ endif()
 if(client)
 	add_subdirectory(mumble)
 endif()
-
-if(server)
-	add_subdirectory(murmur)
-endif()
-
-if(tests)
-	add_subdirectory(tests)
-endif()
-
-if(benchmarks)
-	add_subdirectory(benchmarks)
-endif()

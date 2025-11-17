@@ -52,6 +52,7 @@ SOURCE_DIR=$(pwd)
 BUILD_DIR="${SOURCE_DIR}/build"
 
 echo "--- 3. Creating and Entering Build Directory ---"
+rm -rf "${BUILD_DIR}"
 mkdir -p "${BUILD_DIR}"
 cd "${BUILD_DIR}"
 
@@ -59,8 +60,8 @@ echo "--- 4. Running Combined CMake Configuration ---"
 
 # The source directory argument is now '..' (the parent directory)
 cmake \
+    -G "Xcode" \
     -DCMAKE_BUILD_TYPE=Release \
-    # ICE Path Hints
     -DIce_DIR="${ICE_CMAKE_DIR}" \
     -DIce_SLICE_DIR="${ICE_SLICE_DIR}" \
     -DIce_ADD_SLICE_COMPILER=ON \
@@ -69,18 +70,14 @@ cmake \
     -DICE_UTIL_LIBRARY="${ICE_PREFIX}/lib/libIceUtil.dylib" \
     -DICE_SSL_LIBRARY="${ICE_PREFIX}/lib/libIceSSL.dylib" \
     -DICE_ICE_LIBRARY="${ICE_PREFIX}/lib/libIce.dylib" \
-    \
-    # MySQL Path Hints (to resolve missing MySQL errors)
     -DMYSQL_INCLUDE_DIR="${MYSQL_PREFIX}/include" \
     -DMYSQL_LIBRARY="${MYSQL_PREFIX}/lib/libmysqlclient.dylib" \
-    \
-    # Tell CMake where the Mumble source code is (one level up)
     ..
 
 echo "--- CMake Configuration Complete ---"
 
 # 5. Compile the project
 echo "--- 5. Starting Build (make) ---"
-make -j$(sysctl -n hw.ncpu)
+xcodebuild -configuration Release
 
 # --- END OF SCRIPT ---
