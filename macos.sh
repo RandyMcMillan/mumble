@@ -64,7 +64,7 @@ echo "--- 4. Running Combined CMake Configuration ---"
 
 # The source directory argument is now '..' (the parent directory)
 cmake \
-    -G "Unix Makefiles" \
+    -G "Xcode" \
     -DCMAKE_BUILD_TYPE=Release \
     -DIce_DIR="${ICE_CMAKE_DIR}" \
     ..
@@ -73,6 +73,6 @@ echo "--- CMake Configuration Complete ---"
 
 # 5. Compile the project
 echo "--- 5. Starting Build (make) ---"
-make -j8
+xcodebuild -configuration Release GCC_PREPROCESSOR_DEFINITIONS='$(inherited) GL_SILENCE_DEPRECATION=1'
 
 # --- END OF SCRIPT ---
