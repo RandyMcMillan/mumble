@@ -27,6 +27,8 @@ project(mumble
 	LANGUAGES "C" "CXX"
 )
 
+enable_language(OBJC OBJCXX)
+
 cmake_policy(SET CMP0068 OLD)
 
 set(3RDPARTY_DIR "${CMAKE_SOURCE_DIR}/3rdparty")
