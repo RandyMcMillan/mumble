@@ -67,15 +67,6 @@ cmake \
     -G "Xcode" \
     -DCMAKE_BUILD_TYPE=Release \
     -DIce_DIR="${ICE_CMAKE_DIR}" \
-    -DIce_SLICE_DIR="${ICE_SLICE_DIR}" \
-    -DIce_ADD_SLICE_COMPILER=ON \
-    -DICE_INCLUDE_DIR="${ICE_PREFIX}/include" \
-    -DICE_LIBRARY="${ICE_PREFIX}/lib" \
-    -DICE_UTIL_LIBRARY="${ICE_PREFIX}/lib/libIceUtil.dylib" \
-    -DICE_SSL_LIBRARY="${ICE_PREFIX}/lib/libIceSSL.dylib" \
-    -DICE_ICE_LIBRARY="${ICE_PREFIX}/lib/libIce.dylib" \
-    -DMYSQL_INCLUDE_DIR="${MYSQL_PREFIX}/include" \
-    -DMYSQL_LIBRARY="${MYSQL_PREFIX}/lib/libmysqlclient.dylib" \
     ..
 
 echo "--- CMake Configuration Complete ---"

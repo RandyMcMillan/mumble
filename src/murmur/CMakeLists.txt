@@ -58,9 +58,10 @@ else()
 	add_executable(mumble-server "main.cpp")
 endif()
 
-find_package(Ice REQUIRED)
+# find_package(Ice REQUIRED)
 
-target_link_libraries(mumble-server PUBLIC mumble_server_object_lib CLI11::CLI11 Ice::Ice)
+list(APPEND CMAKE_PREFIX_PATH "/opt/homebrew/opt/ice")
+target_link_libraries(mumble-server PUBLIC mumble_server_object_lib CLI11::CLI11 /opt/homebrew/opt/ice/lib/libIce.dylib /opt/homebrew/opt/ice/lib/libIceSSL.dylib)
 
 target_include_directories(mumble_server_object_lib
 	PUBLIC
@@ -107,11 +108,12 @@ target_link_libraries(mumble_server_object_lib
 	PUBLIC
 		shared
 		spdlog::spdlog
-		soci_core
+		/opt/homebrew/lib/libsoci_core.dylib
 		soci_mysql
 		soci_postgresql
 		soci_sqlite3
-		Ice::Ice
+		/opt/homebrew/opt/ice/lib/libIce.dylib
+		/opt/homebrew/opt/ice/lib/libIceSSL.dylib
 )
 
 if(static)
