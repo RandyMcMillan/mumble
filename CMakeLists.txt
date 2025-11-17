@@ -27,11 +27,16 @@ project(mumble
 	LANGUAGES "C" "CXX"
 )
 
+enable_language(OBJC OBJCXX)
+
+cmake_policy(SET CMP0068 OLD)
+
 set(3RDPARTY_DIR "${CMAKE_SOURCE_DIR}/3rdparty")
 set(PLUGINS_DIR "${CMAKE_SOURCE_DIR}/plugins")
 
 list(APPEND CMAKE_MODULE_PATH
 	"${CMAKE_SOURCE_DIR}/cmake"
+	"${CMAKE_SOURCE_DIR}/cmake/modules"
 	"${CMAKE_SOURCE_DIR}/cmake/FindModules"
 	"${3RDPARTY_DIR}/cmake-compiler-flags"
 )
@@ -45,10 +50,35 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15)
 
 include(pkg-utils)
 include(project-utils)
+
+if(APPLE AND NOT CMAKE_OSX_ARCHITECTURES)
+  set(CMAKE_OSX_ARCHITECTURES "arm64")
+endif()
+
 include(TargetArch)
 include(CheckIPOSupported)
 
 find_package(Python 3 COMPONENTS Interpreter REQUIRED)
+
+# Manually define PostgreSQL::PostgreSQL target
+add_library(PostgreSQL::PostgreSQL UNKNOWN IMPORTED)
+set_target_properties(PostgreSQL::PostgreSQL PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "/opt/homebrew/opt/libpq/include"
+    IMPORTED_LOCATION_RELEASE "/opt/homebrew/opt/libpq/lib/libpq.dylib"
+    IMPORTED_LOCATION_DEBUG "/opt/homebrew/opt/libpq/lib/libpq.dylib"
+    IMPORTED_LOCATION_MINSIZEREL "/opt/homebrew/opt/libpq/lib/libpq.dylib"
+    IMPORTED_LOCATION_RELWITHDEBINFO "/opt/homebrew/opt/libpq/lib/libpq.dylib"
+)
+
+# Manually define MySQL::MySQL target
+add_library(MySQL::MySQL UNKNOWN IMPORTED)
+set_target_properties(MySQL::MySQL PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "/opt/homebrew/opt/mysql-client/include"
+    IMPORTED_LOCATION_RELEASE "/opt/homebrew/opt/mysql-client/lib/libmysqlclient.dylib"
+    IMPORTED_LOCATION_DEBUG "/opt/homebrew/opt/mysql-client/lib/libmysqlclient.dylib"
+    IMPORTED_LOCATION_MINSIZEREL "/opt/homebrew/opt/mysql-client/lib/libmysqlclient.dylib"
+    IMPORTED_LOCATION_RELWITHDEBINFO "/opt/homebrew/opt/mysql-client/lib/libmysqlclient.dylib"
+)
 
 
 check_ipo_supported(RESULT LTO_DEFAULT)
@@ -72,8 +102,8 @@ endif()
 
 option(debug-dependency-search "Prints extended information during the search for the needed dependencies" OFF)
 
-if(NOT CMAKE_BUILD_TYPE)
-	set_property(CACHE CMAKE_BUILD_TYPE PROPERTY VALUE "Release")
+if(NOT CMAKE_BUILD_TYPE AND NOT IS_MULTI_CONFIG)
+	set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(
         "-DDEBUG"
@@ -162,6 +192,8 @@ set(CMAKE_UNITY_BUILD_BATCH_SIZE 40)
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ${lto})
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_DEBUG OFF)
 
+set(SOCI_SHARED ON)
+
 if(bundled-utfcpp)
 	add_subdirectory(${3RDPARTY_DIR}/utfcpp)
 else()
@@ -173,7 +205,7 @@ if(g15 AND WIN32)
 	add_subdirectory("helpers/g15helper")
 endif()
 
-if(APPLE AND MUMBLE_TARGET_ARCH MATCHES "arm.*")
+if(APPLE AND MUMBLE_TARGET_ARCH MATCHES "arm.*ữa")
 	# mach_override doesn't support ARM
 	# https://github.com/rentzsch/mach_override/issues/6
 	set(overlay OFF CACHE BOOL "" FORCE)
